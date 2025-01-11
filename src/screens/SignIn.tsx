@@ -1,5 +1,6 @@
-import { VStack, Image } from "@gluestack-ui/themed"
+import { VStack, Image, Text, Center } from "@gluestack-ui/themed"
 import BackgrounImage from "@assets/background.png";
+import Logo from "@assets/logo.svg";
 
 const SignIn = () => {
     return (
@@ -12,6 +13,13 @@ const SignIn = () => {
                 alt="People Training"
                 position="absolute"
             />
+
+            <Center my="$24">
+                <Logo />
+                <Text color="$gray100" fontSize="$sm">
+                    Train your Mind and your Body
+                </Text>
+            </Center>
         </VStack>
     )
 }
