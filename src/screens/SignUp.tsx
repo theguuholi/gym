@@ -4,7 +4,7 @@ import Logo from "@assets/logo.svg";
 import Input from "@components/Input";
 import Button from "@components/Button";
 
-const SignIn = () => {
+const SignUp = () => {
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
 
@@ -26,21 +26,19 @@ const SignIn = () => {
                         </Text>
                     </Center>
 
-                    <Center gap="$2">
+                    <Center gap="$2" flex={1}>
                         <Heading color="$gray100">
-                            Access Account
+                            Create Account
                         </Heading>
 
+                        <Input placeholder="Name" />
                         <Input placeholder="E-mail" keyboardType="email-address" autoCapitalize="none" />
                         <Input placeholder="Password" secureTextEntry />
 
-                        <Button title="Sign In" />
+                        <Button title="Sign Up" />
                     </Center>
 
-                    <Center flex={1} justifyContent="flex-end" mt="$4">
-                        <Text color="$gray100" fontSize="$sm" mb="$3" fontFamily="$bold">Do you still does not have access?</Text>
-                        <Button title="Create" variant="outline" />
-                    </Center>
+                    <Button title="Back to Sign In" variant="outline" mt="$12" />
                 </VStack>
 
             </VStack>
@@ -48,4 +46,4 @@ const SignIn = () => {
 
     )
 }
-export default SignIn
+export default SignUp
