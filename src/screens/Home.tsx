@@ -1,12 +1,45 @@
+import ExerciseCard from "@components/ExerciseCard";
 import Group from "@components/Group";
 import HomeHeader from "@components/HomeHeader";
-import { VStack } from "@gluestack-ui/themed"
+import { HStack, VStack, Text, Heading } from "@gluestack-ui/themed"
 import { useState } from "react";
 import { FlatList } from "react-native";
 
 
 const Home = () => {
     const [groups, setGroups] = useState(["Back", "Shoulder", "Triceps", "Biceps", "Chest", "Legs"]);
+    const [exercises, setExercises] = useState([
+        {
+            id: "1",
+            name: "Pull Up",
+            group: "Back"
+        },
+        {
+            id: "2",
+            name: "Shoulder Press",
+            group: "Shoulder"
+        },
+        {
+            id: "3",
+            name: "Tricep Dip",
+            group: "Triceps"
+        },
+        {
+            id: "4",
+            name: "Bicep Curl",
+            group: "Biceps"
+        },
+        {
+            id: "5",
+            name: "Bench Press",
+            group: "Chest"
+        },
+        {
+            id: "6",
+            name: "Squat",
+            group: "Legs"
+        }
+    ]);
     const [groupSelected, setGroupSelected] = useState("Back");
 
     return (
@@ -19,7 +52,7 @@ const Home = () => {
                 renderItem={({ item }) => (
                     <Group
                         name={item}
-                        isActive={groupSelected === item}
+                        isActive={groupSelected.toLowerCase() === item.toLowerCase()}
                         onPress={() => setGroupSelected(item)}
                     />
                 )}
@@ -28,6 +61,26 @@ const Home = () => {
                 contentContainerStyle={{ paddingHorizontal: 32 }}
                 style={{ marginVertical: 40, maxHeight: 44, minHeight: 44 }}
             />
+
+            <VStack px="$8" flex={1}>
+                <HStack justifyContent="space-between" mb="$5" alignItems="center">
+                    <Heading color="$gray200" fontSize="$md">Exercises</Heading>
+                    <Text color="$gray200" fontSize="$sm" fontFamily="$body">4</Text>
+                </HStack>
+
+
+                <FlatList
+                    data={exercises}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 20 }}
+                    renderItem={({ item }) => (
+                        <ExerciseCard
+                        />
+                    )}
+                />
+            </VStack>
+
         </VStack>
     )
 }
