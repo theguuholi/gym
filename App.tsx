@@ -4,8 +4,7 @@ import React from 'react';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { config } from './config/gluestack-ui.config';
 import Loading from '@components/Loading';
-import SignIn from '@screens/SignIn';
-import SignUp from '@screens/SignUp';
+import Routes from '@routes/index';
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_700Bold, Roboto_400Regular });
@@ -13,7 +12,7 @@ export default function App() {
     <GluestackUIProvider config={config}>
       {
         fontsLoaded ? (
-          <SignUp />
+          <Routes />
         ) : <Loading />
       }
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
