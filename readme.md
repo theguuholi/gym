@@ -15,3 +15,5 @@ https://uifaces.co
 
 
 ❯ npx expo install expo-file-system                   
+
+❯ npm install react-hook-form    
