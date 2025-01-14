@@ -2,11 +2,15 @@ import ExerciseCard from "@components/ExerciseCard";
 import Group from "@components/Group";
 import HomeHeader from "@components/HomeHeader";
 import { HStack, VStack, Text, Heading } from "@gluestack-ui/themed"
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { useState } from "react";
 import { FlatList } from "react-native";
 
 
 const Home = () => {
+    const navigation = useNavigation<AppNavigatorRoutesProps>();
+    
     const [groups, setGroups] = useState(["Back", "Shoulder", "Triceps", "Biceps", "Chest", "Legs"]);
     const [exercises, setExercises] = useState([
         {
@@ -42,6 +46,10 @@ const Home = () => {
     ]);
     const [groupSelected, setGroupSelected] = useState("Back");
 
+    const handleOpenExerciseDetails = () => {
+        navigation.navigate("Exercise")
+    }
+
     return (
         <VStack flex={1}>
             <HomeHeader></HomeHeader>
@@ -76,6 +84,7 @@ const Home = () => {
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item }) => (
                         <ExerciseCard
+                            onPress={handleOpenExerciseDetails}
                         />
                     )}
                 />

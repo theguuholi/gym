@@ -1,7 +1,9 @@
+import Button from "@components/Button";
+import Input from "@components/Input";
 import ScreenHeader from "@components/ScreenHeader";
 import UserPhoto from "@components/UserPhoto";
-import { Center, Text, VStack } from "@gluestack-ui/themed"
-import { ScrollView } from "react-native";
+import { Center, Heading, Text, VStack } from "@gluestack-ui/themed"
+import { ScrollView, TouchableOpacity } from "react-native";
 
 
 const Profile = () => {
@@ -17,7 +19,37 @@ const Profile = () => {
                         alt="Profile Photo"
                         size="xl"
                     />
+
+                    <TouchableOpacity>
+                        <Text color="$green500" fontFamily="$heading" fontSize="$md" mt="$2" mb="$8">
+                            Edit Profile
+                        </Text>
+                    </TouchableOpacity>
+
+
+                    <Center w="$full" gap="$4">
+                        <Input placeholder="Name" isReadOnly />
+                        <Input placeholder="E-mail" />
+                    </Center>
+
+                    <Heading
+                        alignSelf="flex-start"
+                        fontFamily="$heading"
+                        color="$gray200"
+                        fontSize="$md"
+                        mt="$12"
+                        mb="$2"
+                    >Update Password</Heading>
+
+                    <Center w="$full" gap="$4">
+                        <Input placeholder="Old Password" secureTextEntry />
+                        <Input placeholder="New Password" secureTextEntry />
+                        <Input placeholder="Confirm Password" secureTextEntry />
+                        <Button title="Update" />
+
+                    </Center>
                 </Center>
+
 
             </ScrollView>
         </VStack>
