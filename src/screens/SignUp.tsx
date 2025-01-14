@@ -7,17 +7,30 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Controller, useForm } from "react-hook-form";
 
+type FormDataProps = {
+    name: string;
+    email: string;
+    password: string;
+    password_confirm: string;
+}
 const SignUp = () => {
     const navigator = useNavigation<AuthNavigatorRoutesProps>();
 
-    const { control, handleSubmit } = useForm();
+    const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
+        defaultValues: {
+            name: "",
+            email: "",
+            password: "",
+            password_confirm: ""
+        }
+    });
 
     const handleGoBack = () => {
         navigator.navigate("SignIn");
     }
 
-    function handleSignUp(data: any): void {
-        console.log(data);
+    function handleSignUp({ name, email, password, password_confirm }: FormDataProps): void {
+        console.log(name);
     }
 
     return (
@@ -48,6 +61,11 @@ const SignUp = () => {
 
                         <Controller control={control}
                             name="name"
+                            rules={
+                                {
+                                    required: "Name is required"
+                                }
+                            }
                             render={({ field: { onChange, value } }) => (
                                 <Input
                                     placeholder="Name"
@@ -55,6 +73,12 @@ const SignUp = () => {
                                     value={value}
                                 />)}
                         />
+
+                        {/* {
+                            errors.name?.message && <Text color="$white">{errors.name.message}</Text>
+                        } */}
+
+                        <Text color="$white">{errors.name?.message}</Text>
 
                         <Controller
                             control={control}
