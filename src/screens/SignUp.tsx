@@ -71,6 +71,8 @@ const SignUp = () => {
                                     placeholder="Name"
                                     onChangeText={onChange}
                                     value={value}
+                                    errorMessage={errors.name?.message}
+
                                 />)}
                         />
 
@@ -78,11 +80,19 @@ const SignUp = () => {
                             errors.name?.message && <Text color="$white">{errors.name.message}</Text>
                         } */}
 
-                        <Text color="$white">{errors.name?.message}</Text>
 
                         <Controller
                             control={control}
                             name="email"
+                            rules={
+                                {
+                                    required: "E-mail is required", 
+                                    pattern: {
+                                        value:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                        message: "E-mail is invalid"
+                                    }
+                                }
+                            }
                             render={({ field: { onChange, value } }) => (
                                 <Input
                                     placeholder="E-mail"
@@ -90,9 +100,12 @@ const SignUp = () => {
                                     autoCapitalize="none"
                                     onChangeText={onChange}
                                     value={value}
+                                    errorMessage={errors.email?.message}
                                 />
                             )}
                         />
+
+
                         <Controller
                             control={control}
                             name="password"

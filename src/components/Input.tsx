@@ -1,24 +1,64 @@
-import { Input as GlueStackInput, InputField } from "@gluestack-ui/themed"
+import {
+    FormControl,
+    FormControlError,
+    FormControlErrorText,
+    Input as GluestackInput,
+    InputField,
+} from '@gluestack-ui/themed'
 import { ComponentProps } from "react";
 
 type Props = ComponentProps<typeof InputField> & {
-    isReadOnly?: boolean
+    isInvalid?: boolean,
+    errorMessage?: string | null,
+    isReadOnly?: boolean,
 }
 
-const Input = ({isReadOnly = false, ...rest }: Props) => {
+const Input = ({
+    isReadOnly = false,
+    errorMessage = null,
+    isInvalid = false,
+    ...props
+}: Props) => {
+    const invalid = !!errorMessage || isInvalid;
+
     return (
-        <GlueStackInput  h="$14"  borderWidth="$0" borderRadius="$md"
-            $focus={
-                {
-                    borderWidth: "$1",
-                    borderColor: "$green500"
+        <FormControl isInvalid={invalid} mb="$4" w="$full">
+            <GluestackInput
+                h="$14"
+                borderWidth="$0"
+                borderRadius="$md"
+                $focus={
+                    invalid ? {
+                        borderWidth: 1,
+                        borderColor: '$red500',
+                    } : {
+                        borderWidth: 1,
+                        borderColor: '$green500',
+                    }}
+                isReadOnly={isReadOnly}
+                isInvalid={invalid}
+                $invalid={{
+                    borderColor: '$red500',
+                    borderWidth: 1,
                 }
-            }
-            isReadOnly={isReadOnly}
-            opacity={isReadOnly ? 0.5 : 1}
-        >
-            <InputField {...rest}  px="$4" bg="$gray600" color="$white" fontFamily="$body" placeholderTextColor="$gray300" />
-        </GlueStackInput>
+                }
+                opacity={isReadOnly ? 0.5 : 1}
+            >
+                <InputField
+                    px="$4"
+                    bg="$gray700"
+                    color="$white"
+                    fontFamily="$body"
+                    placeholderTextColor="$gray300"
+                    {...props}
+                />
+            </GluestackInput>
+            <FormControlError>
+                <FormControlErrorText color="$red500">
+                    {errorMessage}
+                </FormControlErrorText>
+            </FormControlError>
+        </FormControl >
     )
 }
 export default Input;
