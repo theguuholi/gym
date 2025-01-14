@@ -1,4 +1,4 @@
-import { VStack, Image, Text, Center, Heading, ScrollView, onChange } from "@gluestack-ui/themed"
+import { VStack, Image, Text, Center, Heading, ScrollView } from "@gluestack-ui/themed"
 import BackgrounImage from "@assets/background.png";
 import Logo from "@assets/logo.svg";
 import Input from "@components/Input";
@@ -6,6 +6,9 @@ import Button from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 
 type FormDataProps = {
     name: string;
@@ -13,6 +16,16 @@ type FormDataProps = {
     password: string;
     password_confirm: string;
 }
+
+const signUpSchema = yup.object({
+    name: yup.string().required("Name is required"),
+    email: yup.string().email("E-mail is invalid").required("E-mail is required"),
+    password: yup.string().required("Password is required").min(6, "Password must be at least 6 characters"),
+    password_confirm: yup.string()
+        .oneOf([yup.ref('password'), undefined], 'Passwords must match')
+        .required('Password confirmation is required')
+});
+
 const SignUp = () => {
     const navigator = useNavigation<AuthNavigatorRoutesProps>();
 
@@ -22,7 +35,8 @@ const SignUp = () => {
             email: "",
             password: "",
             password_confirm: ""
-        }
+        },
+        resolver: yupResolver(signUpSchema)
     });
 
     const handleGoBack = () => {
@@ -61,18 +75,12 @@ const SignUp = () => {
 
                         <Controller control={control}
                             name="name"
-                            rules={
-                                {
-                                    required: "Name is required"
-                                }
-                            }
                             render={({ field: { onChange, value } }) => (
                                 <Input
                                     placeholder="Name"
                                     onChangeText={onChange}
                                     value={value}
                                     errorMessage={errors.name?.message}
-
                                 />)}
                         />
 
@@ -84,15 +92,6 @@ const SignUp = () => {
                         <Controller
                             control={control}
                             name="email"
-                            rules={
-                                {
-                                    required: "E-mail is required", 
-                                    pattern: {
-                                        value:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                        message: "E-mail is invalid"
-                                    }
-                                }
-                            }
                             render={({ field: { onChange, value } }) => (
                                 <Input
                                     placeholder="E-mail"
@@ -115,6 +114,7 @@ const SignUp = () => {
                                     secureTextEntry
                                     onChangeText={onChange}
                                     value={value}
+                                    errorMessage={errors.password?.message}
                                 />
                             )}
                         />
@@ -130,6 +130,7 @@ const SignUp = () => {
                                     value={value}
                                     onSubmitEditing={handleSubmit(handleSignUp)}
                                     returnKeyType="send"
+                                    errorMessage={errors.password_confirm?.message}
                                 />
                             )}
                         />
