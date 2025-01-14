@@ -1,19 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
+import { Center, GluestackUIProvider, Text } from '@gluestack-ui/themed';
+import React from 'react';
+import { StatusBar, StyleSheet, View } from 'react-native';
+import { config } from './config/gluestack-ui.config';
+import Loading from '@components/Loading';
+import Routes from '@routes/index';
 
 export default function App() {
+  const [fontsLoaded] = useFonts({ Roboto_700Bold, Roboto_400Regular });
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <GluestackUIProvider config={config}>
+      {
+        fontsLoaded ? (
+          <Routes />
+        ) : <Loading />
+      }
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+    </GluestackUIProvider>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#202024',
     alignItems: 'center',
     justifyContent: 'center',
   },
