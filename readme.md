@@ -19,3 +19,5 @@ https://uifaces.co
 ❯ npm install react-hook-form    
 
 ❯ npm install @hookform/resolvers yup
+
+https://github.com/orodrigogo/ignitegym-api

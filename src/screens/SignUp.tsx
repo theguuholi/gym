@@ -43,8 +43,22 @@ const SignUp = () => {
         navigator.navigate("SignIn");
     }
 
-    function handleSignUp({ name, email, password, password_confirm }: FormDataProps): void {
-        console.log(name);
+    async function handleSignUp({ name, email, password }: FormDataProps): Promise<void> {
+        const response = await fetch("http://localhost:3333/users", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                password
+            })
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+        console.log(response);
     }
 
     return (
