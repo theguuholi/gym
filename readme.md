@@ -12,3 +12,6 @@ expo image picker
 ❯ npx expo install expo-image-picker                  
 
 https://uifaces.co
+
+
+❯ npx expo install expo-file-system                   
