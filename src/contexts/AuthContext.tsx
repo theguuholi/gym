@@ -13,7 +13,6 @@ type AuthContextProviderProps = {
 }
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-    const [fontsLoaded] = useFonts({ Roboto_700Bold, Roboto_400Regular });
 
     return (
         <AuthContext.Provider value={{
