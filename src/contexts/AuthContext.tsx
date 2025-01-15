@@ -1,6 +1,5 @@
 import { UserDTO } from "@dtos/UserDTO";
 import { createContext } from "react";
-import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
 
 export type AuthContextDataProps = {
     user: UserDTO;
