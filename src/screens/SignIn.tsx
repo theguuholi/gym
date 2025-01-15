@@ -6,6 +6,7 @@ import Button from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Controller, useForm } from 'react-hook-form';
+import { useAuth } from "@hooks/useAuth";
 
 
 type FormData = {
@@ -16,6 +17,7 @@ type FormData = {
 
 const SignIn = () => {
     const navigator = useNavigation<AuthNavigatorRoutesProps>();
+    const { signIn } = useAuth();
 
     const handleNewAccount = () => {
         navigator.navigate("SignUp");
@@ -25,7 +27,7 @@ const SignIn = () => {
     const { control, handleSubmit, formState: { errors } } = useForm<FormData>()
 
     function handleSignIn({ email, password }: FormData) {
-        console.log(email, password)
+        signIn(email, password);
     }
 
 
