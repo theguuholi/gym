@@ -21,3 +21,5 @@ https://uifaces.co
 ❯ npm install @hookform/resolvers yup
 
 https://github.com/orodrigogo/ignitegym-api
+
+npm install axios
