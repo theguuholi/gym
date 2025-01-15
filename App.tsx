@@ -5,16 +5,27 @@ import { StatusBar, StyleSheet, View } from 'react-native';
 import { config } from './config/gluestack-ui.config';
 import Loading from '@components/Loading';
 import Routes from '@routes/index';
+import { AuthContext } from '@contexts/AuthContext';
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_700Bold, Roboto_400Regular });
   return (
     <GluestackUIProvider config={config}>
-      {
-        fontsLoaded ? (
-          <Routes />
-        ) : <Loading />
-      }
+      <AuthContext.Provider value={{
+        user: {
+          id: '123',
+          name: 'John Doe',
+          email: 'jon@doe.com',
+          avatar: 'theguuholi.png'
+        }
+      }}>
+        {
+          fontsLoaded ? (
+            <Routes />
+          ) : <Loading />
+        }
+      </AuthContext.Provider>
+
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
     </GluestackUIProvider>
 
