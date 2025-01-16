@@ -20,6 +20,7 @@ type RouteParamsProps = {
 }
 
 const Exercise = () => {
+    const [sendRegister, setSendRegister] = useState(false);
     const navigation = useNavigation<AppNavigatorRoutesProps>();
     const [isLoading, setIsLoading] = useState(true);
     const route = useRoute();
@@ -56,6 +57,42 @@ const Exercise = () => {
             })
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    const handleExerciseHistoryRegister = async () => {
+        try {
+            setSendRegister(true);
+            await api.post(`/history`, { exercise_id: exerciseId });
+
+            <ToastMessage
+                id={exerciseId}
+                title="Congratulations"
+                description="Exercise registered successfully"
+                action="success"
+                onClose={() => toast.close(exerciseId)}
+            />
+
+            navigation.navigate('History');
+
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+
+            return toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        title="Error"
+                        description={isAppError ? error.message : "SomethingHappened to register the exercise"}
+                        action="error"
+                        onClose={() => toast.close(id)}
+                    />
+                )
+            })
+        }
+        finally {
+            setSendRegister(false);
         }
     }
 
@@ -128,7 +165,8 @@ const Exercise = () => {
                                 </Text>
                             </HStack>
                         </HStack>
-                        <Button title="Done" />
+                        <Button title="Done" isLoading={sendRegister}
+                            onPress={handleExerciseHistoryRegister} />
                     </Box>
                 </VStack>}
 

@@ -1,25 +1,48 @@
 import HistoryCard from "@components/HistoryCard";
 import ScreenHeader from "@components/ScreenHeader";
-import { Heading, VStack, Text } from "@gluestack-ui/themed"
-import { useState } from "react";
+import ToastMessage from "@components/ToastMessage";
+import { Heading, VStack, Text, useToast } from "@gluestack-ui/themed"
+import { api } from "@services/api";
+import { AppError } from "@utils/AppError";
+import { useCallback, useEffect, useState } from "react";
 import { SectionList } from "react-native";
 
 
 const History = () => {
-    const [exercises, setExercises] = useState([
-        {
-            title: "01.13.2024",
-            data: [
-                "Pull Up", "Shoulder Press", "Tricep Dip", "Bicep Curl", "Bench Press", "Squat"
-            ]
-        },
-        {
-            title: "01.12.2024",
-            data: [
-                "Pull Down"
-            ]
-        },
-    ]);
+    const toast = useToast();
+    const [isLoading, setIsLoading] = useState(true);
+    const [exercises, setExercises] = useState();
+
+
+    const fetchHistory = async () => {
+        try {
+            setIsLoading(true);
+            const response = await api.get(`/history`);
+            
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+
+            return toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        title="Error"
+                        description={isAppError ? error.message : "it was not possible to fetch the history"}
+                        action="error"
+                        onClose={() => toast.close(id)}
+                    />
+                )
+            })
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(useCallback(() => {
+        fetchHistory();
+    }, []));
+
     return (
         <VStack flex={1}>
             <ScreenHeader title="History" />
