@@ -79,7 +79,7 @@ const SignUp = () => {
                     <ToastMessage
                         id={id}
                         title={isAppError ? "Error" : "Internal Server Error"}
-                        description={isAppError ? error.message : "An error occurred while trying to process your request"}
+                        description={isAppError ? error.message : "E-mail or password is not correct"}
                         action="error"
                         onClose={() => toast.close(id)}
                     />

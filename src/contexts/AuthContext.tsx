@@ -1,9 +1,12 @@
 import { UserDTO } from "@dtos/UserDTO";
-import { createContext, useState } from "react";
+import { api } from "@services/api";
+import { get, save } from "@storage/UserStorage";
+import { createContext, useEffect, useState } from "react";
 
 export type AuthContextDataProps = {
     user: UserDTO;
-    signIn: (email: string, password: string) => void;
+    signIn: (email: string, password: string) => Promise<void>;
+    isLoadingUserStorageData: boolean;
 }
 
 export const AuthContext = createContext<AuthContextDataProps>({} as AuthContextDataProps);
@@ -13,26 +16,43 @@ type AuthContextProviderProps = {
 }
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-    const [user, setUser] = useState({
-        id: '123',
-        name: 'John Doe',
-        email: 'jon@doe.com',
-        avatar: 'theguuholi.png'
-    });
+    const [user, setUser] = useState({} as UserDTO);
+    const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true);
 
-    const signIn = (email: string, password: string) => {
-        setUser({
-            id: '123',
-            name: 'John Doe',
-            email: email,
-            avatar: 'theguuholi.png'
-        })
+    const signIn = async (email: string, password: string) => {
+        try {
+            const { data } = await api.post('/sessions', { email, password });
+            if (data.user) setUser(data.user);
+            save(data.user);
+
+        } catch (error) {
+            throw error;
+
+        }
+
     }
+
+    const loadUserData = async () => {
+        try {
+            const user = await get();
+            setUser(user);
+        } catch (error) {
+            throw error;
+        } finally {
+            setIsLoadingUserStorageData(false);
+        }
+    }
+
+
+    useEffect(() => {
+        loadUserData();
+    }, []);
 
     return (
         <AuthContext.Provider value={{
             user,
-            signIn
+            signIn,
+            isLoadingUserStorageData
         }}>
 
             {

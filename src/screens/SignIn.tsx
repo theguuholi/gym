@@ -1,4 +1,4 @@
-import { VStack, Image, Text, Center, Heading, ScrollView } from "@gluestack-ui/themed"
+import { VStack, Image, Text, Center, Heading, ScrollView, useToast } from "@gluestack-ui/themed"
 import BackgrounImage from "@assets/background.png";
 import Logo from "@assets/logo.svg";
 import Input from "@components/Input";
@@ -7,6 +7,9 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Controller, useForm } from 'react-hook-form';
 import { useAuth } from "@hooks/useAuth";
+import { AppError } from "@utils/AppError";
+import ToastMessage from "@components/ToastMessage";
+import { useState } from "react";
 
 
 type FormData = {
@@ -18,6 +21,8 @@ type FormData = {
 const SignIn = () => {
     const navigator = useNavigation<AuthNavigatorRoutesProps>();
     const { signIn } = useAuth();
+    const toast = useToast();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleNewAccount = () => {
         navigator.navigate("SignUp");
@@ -26,8 +31,30 @@ const SignIn = () => {
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormData>()
 
-    function handleSignIn({ email, password }: FormData) {
-        signIn(email, password);
+    async function handleSignIn({ email, password }: FormData) {
+        try {
+            setIsLoading(true);
+            await signIn(email, password);
+
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            setIsLoading(false);
+            toast.show({
+                placement: 'top',
+                render: ({ id }) => (
+                    <ToastMessage
+                        id={id}
+                        title={isAppError ? "Error" : "Internal Server Error"}
+                        description={isAppError ? error.message : "An error occurred while trying to process your request"}
+                        action="error"
+                        onClose={() => toast.close(id)}
+                    />
+                )
+            })
+
+        } finally {
+            setIsLoading(false);
+        }
     }
 
 
@@ -84,7 +111,7 @@ const SignIn = () => {
                                 />
                             )}
                         />
-                        <Button title="Sign In" onPress={handleSubmit(handleSignIn)} />
+                        <Button title="Sign In" onPress={handleSubmit(handleSignIn)} isLoading={isLoading} />
                     </Center>
 
                     <Center flex={1} justifyContent="flex-end" mt="$4">

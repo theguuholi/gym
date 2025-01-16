@@ -23,3 +23,5 @@ https://uifaces.co
 https://github.com/orodrigogo/ignitegym-api
 
 npm install axios
+
+❯ npx expo install @react-native-async-storage/async-storage 
