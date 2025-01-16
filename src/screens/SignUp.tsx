@@ -35,7 +35,7 @@ const signUpSchema = yup.object({
 
 const SignUp = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const { signIn } = useAuth();
+    const { singIn } = useAuth();
 
     const toast = useToast();
     const navigator = useNavigation<AuthNavigatorRoutesProps>();
@@ -73,7 +73,7 @@ const SignUp = () => {
         try {
             setIsLoading(true);
             await api.post("/users", { name, email, password });
-            await signIn(email, password);
+            await singIn(email, password);
         } catch (error) {
             // if(axios.isAxiosError(error)) {
             //     Alert.alert("Error", error.response?.data.message);

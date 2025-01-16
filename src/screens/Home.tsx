@@ -19,10 +19,10 @@ const Home = () => {
     const [groups, setGroups] = useState<string[]>([]);
     const toast = useToast();
     const [exercises, setExercises] = useState<ExerciseDTO[]>([]);
-    const [groupSelected, setGroupSelected] = useState("costas");
+    const [groupSelected, setGroupSelected] = useState("antebraço");
 
-    const handleOpenExerciseDetails = () => {
-        navigation.navigate("Exercise")
+    const handleOpenExerciseDetails = (exerciseId: string) => {
+        navigation.navigate("Exercise", {exerciseId})
     }
 
     const fetchGroups = async () => {
@@ -117,7 +117,7 @@ const Home = () => {
                             contentContainerStyle={{ paddingBottom: 20 }}
                             renderItem={({ item }) => (
                                 <ExerciseCard
-                                    onPress={handleOpenExerciseDetails}
+                                    onPress={() => handleOpenExerciseDetails(item.id)}
                                     data={item}
                                 />
                             )}
