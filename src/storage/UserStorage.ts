@@ -12,3 +12,7 @@ export const get = async (): Promise<UserDTO> => {
     const user: UserDTO = storage ? JSON.parse(storage) : {} as UserDTO;
     return user;
 }
+
+export const remove = async (): Promise<void> => {
+    await AsyncStorage.removeItem(USER_STORAGE);
+}
