@@ -1,53 +1,68 @@
+import { createContext, ReactNode, useEffect, useState } from "react";
+
+import { api } from '@services/api';
 import { UserDTO } from "@dtos/UserDTO";
-import { api } from "@services/api";
 import { get, remove, save } from "@storage/UserStorage";
-import { createContext, useEffect, useState } from "react";
+import { getToken, tokenRemove, tokenSave } from "@storage/AuthStorage";
 
 export type AuthContextDataProps = {
     user: UserDTO;
-    signIn: (email: string, password: string) => Promise<void>;
+    singIn: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
     isLoadingUserStorageData: boolean;
 }
 
-export const AuthContext = createContext<AuthContextDataProps>({} as AuthContextDataProps);
-
 type AuthContextProviderProps = {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
-export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-    const [user, setUser] = useState({} as UserDTO);
+export const AuthContext = createContext<AuthContextDataProps>({} as AuthContextDataProps);
+
+export function AuthContextProvider({ children }: AuthContextProviderProps) {
+
+    const [user, setUser] = useState<UserDTO>({} as UserDTO);
     const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true);
 
-    const signIn = async (email: string, password: string) => {
-        try {
-            const { data } = await api.post('/sessions', { email, password });
-            if (data.user) setUser(data.user);
-            save(data.user);
+    async function userAndTokenUpdate(userData: UserDTO, token: string) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-        } catch (error) {
-            throw error;
-        }
+        setUser(userData);
     }
 
-    const signOut = async () => {
+    async function storageUserAndTokenSave(userData: UserDTO, token: string) {
         try {
             setIsLoadingUserStorageData(true)
-            setUser({} as UserDTO);
-            await remove();
+            await save(userData);
+            await tokenSave(token);
+
         } catch (error) {
-            throw error;
-        }
-         finally{
+            throw error
+        } finally {
             setIsLoadingUserStorageData(false);
-         }
+        }
     }
 
-    const loadUserData = async () => {
+    async function singIn(email: string, password: string) {
         try {
-            const user = await get();
-            setUser(user);
+            const { data } = await api.post('/sessions', { email, password });
+
+            if (data.user && data.token) {
+                await storageUserAndTokenSave(data.user, data.token);
+                userAndTokenUpdate(data.user, data.token)
+            }
+        } catch (error) {
+            throw error
+        } finally {
+            setIsLoadingUserStorageData(false);
+        }
+    }
+
+    async function signOut() {
+        try {
+            setIsLoadingUserStorageData(true);
+            setUser({} as UserDTO);
+            await remove();
+            await tokenRemove()
         } catch (error) {
             throw error;
         } finally {
@@ -55,23 +70,35 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         }
     }
 
+    async function loadUserData() {
+        try {
+            setIsLoadingUserStorageData(true);
+
+            const userLogged = await get();
+            const token = await getToken();
+
+            if (token && userLogged) {
+                userAndTokenUpdate(userLogged, token);
+            }
+        } catch (error) {
+            throw error
+        } finally {
+            setIsLoadingUserStorageData(false);
+        }
+    }
 
     useEffect(() => {
-        loadUserData();
-    }, []);
+        loadUserData()
+    }, [])
 
     return (
         <AuthContext.Provider value={{
             user,
-            signIn,
-            isLoadingUserStorageData, 
-            signOut
+            singIn,
+            signOut,
+            isLoadingUserStorageData
         }}>
-
-            {
-                children
-            }
+            {children}
         </AuthContext.Provider>
     )
 }
-
