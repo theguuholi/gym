@@ -8,11 +8,33 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { useState } from "react";
 import ToastMessage from "@components/ToastMessage";
+import { Controller, useForm } from "react-hook-form";
+import { useAuth } from "@hooks/useAuth";
 
+
+type FormDataProps = {
+    name: string;
+    email: string;
+    password: string;
+    old_password: string;
+    confirm_password: string;
+}
 const Profile = () => {
 
     const [userPhoto, setUserPhoto] = useState<string>("https://github.com/theguuholi.png");
     const toast = useToast();
+    const { user } = useAuth()
+    const { control, handleSubmit } = useForm<FormDataProps>({
+        defaultValues: {
+            name: user.name,
+            email: user.email
+        }
+    })
+
+    const handleProfileUpdate = async (data: FormDataProps) => {
+        console.log(data);
+    }
+
     const handleUserPhotoSelect = async () => {
         try {
 
@@ -78,8 +100,23 @@ const Profile = () => {
 
 
                     <Center w="$full" gap="$4">
-                        <Input placeholder="Name" isReadOnly />
-                        <Input placeholder="E-mail" />
+
+                        <Controller
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                                <Input placeholder="Name" onChangeText={onChange} value={value} />
+                            )}
+                            name="name"
+                        />
+
+                        <Controller
+                            control={control}
+                            render={({ field: { value, onChange } }) => (
+                                <Input placeholder="E-mail" isReadOnly onChangeText={onChange} value={value} />
+                            )}
+                            name="email"
+                        />
+
                     </Center>
 
                     <Heading
@@ -92,10 +129,32 @@ const Profile = () => {
                     >Update Password</Heading>
 
                     <Center w="$full" gap="$4">
-                        <Input placeholder="Old Password" secureTextEntry />
-                        <Input placeholder="New Password" secureTextEntry />
-                        <Input placeholder="Confirm Password" secureTextEntry />
-                        <Button title="Update" />
+
+
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange } }) => (
+                                <Input placeholder="Old Password" secureTextEntry onChangeText={onChange} />
+                            )}
+                            name="old_password"
+                        />
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange } }) => (
+                                <Input placeholder="New Password" secureTextEntry onChangeText={onChange} />
+                            )}
+                            name="password"
+                        />
+
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange } }) => (
+                                <Input placeholder="Confirm Password" secureTextEntry onChangeText={onChange} />
+                            )}
+                            name="confirm_password"
+                        />
+
+                        <Button title="Update" onPress={handleSubmit(handleProfileUpdate)} />
 
                     </Center>
                 </Center>
