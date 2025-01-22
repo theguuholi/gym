@@ -19,3 +19,9 @@ https://uifaces.co
 ❯ npm install react-hook-form    
 
 ❯ npm install @hookform/resolvers yup
+
+https://github.com/orodrigogo/ignitegym-api
+
+npm install axios
+
+❯ npx expo install @react-native-async-storage/async-storage 
