@@ -69,7 +69,7 @@ const Profile = () => {
             await api.put('/users', data);
 
             await updateUserProfile(userUpdated);
-            
+
             toast.show({
                 placement: 'top',
                 render: ({ id }) => (
@@ -137,7 +137,36 @@ const Profile = () => {
                     })
                 }
 
-                setUserPhoto(photoSelected.assets[0].uri);
+                // setUserPhoto(photoSelected.assets[0].uri);
+                const fileExtension = photoURI.split('.').pop();
+                const photoFile = {
+                    uri: photoURI,
+                    type: `${photoSelected.assets[0].type}/${fileExtension}`,
+                    name: `${user.name}.${fileExtension}`.toLocaleLowerCase()
+                } as any;
+
+                const userPhotoUploadForm = new FormData();
+                userPhotoUploadForm.append("avatar", photoFile);
+                const avatarUpdatedResponse = await api.patch('/users/avatar', userPhotoUploadForm, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                toast.show({
+                    placement: 'top',
+                    render: ({ id }) => (
+                        <ToastMessage
+                            id={id}
+                            title="Uploaded image"
+                            action="success"
+                            onClose={() => toast.close(id)}
+                        />
+                    )})
+
+                    const userUpdated = user; 
+                    userUpdated.avatar = avatarUpdatedResponse.data.avatar;
+                    updateUserProfile(userUpdated);
             }
         } catch (error) {
             console.error(error);
