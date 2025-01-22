@@ -4,11 +4,13 @@ import { api } from '@services/api';
 import { UserDTO } from "@dtos/UserDTO";
 import { get, remove, save } from "@storage/UserStorage";
 import { getToken, tokenRemove, tokenSave } from "@storage/AuthStorage";
+import { Use } from "react-native-svg";
 
 export type AuthContextDataProps = {
     user: UserDTO;
     singIn: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
+    updateUserProfile: (userUpdated: UserDTO) => Promise<void>;
     isLoadingUserStorageData: boolean;
 }
 
@@ -27,6 +29,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
         setUser(userData);
+    }
+
+    const updateUserProfile = async (userUpdated: UserDTO) => {
+        try {
+            setUser(userUpdated)
+            await save(userUpdated)
+        } catch (error) {
+            throw error
+        }
     }
 
     async function storageUserAndTokenSave(userData: UserDTO, token: string) {
@@ -95,7 +106,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
             user,
             singIn,
             signOut,
-            isLoadingUserStorageData
+            isLoadingUserStorageData,
+            updateUserProfile
         }}>
             {children}
         </AuthContext.Provider>
